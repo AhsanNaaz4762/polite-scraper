@@ -1,45 +1,164 @@
-# The Polite Scraper
+# FlyRank BE-05 — The Polite Scraper
 
-Backend AI Engineering — Week 5 — BE-05
+A small Python web scraper built for the FlyRank Backend AI Engineering internship assignment **BE-05: The Polite Scraper**.
 
-## Target Classification
+The scraper collects book data from [Books to Scrape](https://books.toscrape.com/), extracts structured information, normalizes prices, validates records with Pydantic, handles failed pages safely, and stores the results as JSON.
 
-This project scrapes Books to Scrape, a public practice sandbox
-designed for learning web scraping.
+## Features
 
-Target:
-https://books.toscrape.com/
+* Collects books from the first 3 catalogue pages
+* Targets 60 unique books
+* Uses `BeautifulSoup` for HTML parsing
+* Converts price text such as `£51.77` into a numeric `price_gbp` value
+* Extracts:
 
-Scope:
-Only the first 3 catalogue pages will be processed.
+  * Title
+  * Product URL
+  * Price
+  * Availability
+  * Rating
+  * Description
+  * Source catalogue page
+  * Fetch timestamp
+* Validates records using a Pydantic schema
+* Uses a descriptive User-Agent
+* Checks `robots.txt` before scraping
+* Adds a polite delay between requests
+* Uses local caching to avoid unnecessary repeated requests
+* Retries temporary network failures
+* Handles HTTP failures without crashing the complete pipeline
+* Generates a run report with scraping statistics
 
-Expected data:
-- title
-- product URL
-- price
-- availability
-- rating
-- description
-- source page
-- fetched timestamp
+## Project Structure
 
-## Robots Check
+```text
+polite-scraper/
+│
+├── src/
+│   └── main.py
+│
+├── output/
+│   ├── books.json
+│   ├── errors.json
+│   └── run-report.json
+│
+├── cache/
+│   └── downloaded HTML pages
+│
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
 
-The scraper checks:
+The `cache/` directory is used locally and should normally be excluded from Git with `.gitignore`.
 
-https://books.toscrape.com/robots.txt
+## Installation
 
-The result of this check will be documented here after running
-the scraper.
+Clone the repository:
 
-## Politeness
+```bash
+git clone https://github.com/YOUR_USERNAME/polite-scraper.git
+cd polite-scraper
+```
 
-The scraper:
-- identifies itself with a User-Agent
-- uses a request timeout
-- waits at least 500 ms between real requests
-- caches downloaded pages
-- checks HTTP status codes
-- does not repeatedly request failed pages
+Install dependencies:
 
-I will not reuse this code on another site without checking its rules and terms first.
+```bash
+pip install -r requirements.txt
+```
+
+## Run
+
+Run the scraper with:
+
+```bash
+python src/main.py
+```
+
+The scraper checks the site's `robots.txt`, discovers books from three catalogue pages, fetches the book detail pages, validates the extracted records, and generates JSON output files.
+
+## Output Files
+
+### `output/books.json`
+
+Contains successfully validated book records.
+
+Example structure:
+
+```json
+{
+  "title": "Example Book",
+  "product_url": "https://books.toscrape.com/",
+  "price_text": "£20.00",
+  "price_gbp": 20.0,
+  "availability_text": "In stock",
+  "rating_text": "Three",
+  "description": "Book description",
+  "source_page": "https://books.toscrape.com/catalogue/page-1.html",
+  "fetched_at": "2026-01-01T00:00:00+00:00"
+}
+```
+
+### `output/errors.json`
+
+Stores records that fail schema validation.
+
+### `output/run-report.json`
+
+Contains execution statistics such as:
+
+* Start time
+* Duration
+* Pages fetched
+* Cache hits
+* Valid records
+* Invalid records
+* Failed pages
+
+## Polite Scraping Practices
+
+The scraper is designed to minimize unnecessary load on the target website.
+
+It:
+
+1. Checks `robots.txt`
+2. Identifies itself using a User-Agent
+3. Waits between requests
+4. Caches downloaded pages
+5. Uses limited retries for network failures
+6. Does not continuously retry client errors such as `404` or `403`
+7. Continues processing when an individual page fails
+
+## Validation
+
+Each extracted record is validated using the `RawBookRecord` Pydantic model.
+
+Important fields include:
+
+```text
+title
+product_url
+price_text
+price_gbp
+availability_text
+rating_text
+description
+source_page
+fetched_at
+```
+
+## Error Handling
+
+A failed page does not terminate the complete scraping pipeline.
+
+Network failures and HTTP errors are recorded by the run tracker, while schema validation failures are written to `errors.json`.
+
+## Assignment
+
+**FlyRank Backend AI Engineering**
+
+**Assignment:** BE-05 — The Polite Scraper
+
+**Source:** Books to Scrape
+
+The project demonstrates polite web scraping, HTML parsing, data normalization, schema validation, caching, retry handling, and structured JSON output.
