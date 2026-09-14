@@ -1,0 +1,23 @@
+{
+  "start_time": "2026-09-14T12:09:12.374111+00:00",
+  "duration_seconds": 411.25,
+  "pages_fetched": 60,
+  "cache_hits": 0,
+  "valid_records": 57,
+  "invalid_records": 0,
+  "failed_pages_count": 3,
+  "failed_pages": [
+    {
+      "url": "https://books.toscrape.com/catalogue/untitled-collection-sabbath-poems-2014_953/index.html",
+      "error": "Timeout/Network Failure"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/unbound-how-eight-technologies-made-us-human-transformed-society-and-brought-our-world-to-the-brink_950/index.html",
+      "error": "Timeout/Network Failure"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-torch-is-passed-a-harding-family-story_945/index.html",
+      "error": "Timeout/Network Failure"
+    }
+  ]
+}
